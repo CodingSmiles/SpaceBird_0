@@ -1,11 +1,27 @@
 #include <Arduino.h>
+/*
+This sketch only works with the Arduino UNO because the timer numbers would
+vary with the other boards
+*/
+// In this commit, the code is unfinished and needs to be finished
 
-void setup() {
-  pinMode(13, OUTPUT);
+int outPin = 9; /* Output pin to transistor base, get your transistor's datasheet and
+   find where the base is
+*/
+
+// Variable to hold speed value
+int speedVal;
+
+void setup()
+{
+    // Setup transistor pin as output
+    pinMode(outPin, OUTPUT);
 }
 
-void loop() {
-  digitalWrite(13, HIGH);
-  delay(1000);
-  digitalWrite(13, LOW);
+void loop()
+{
+    // Write PWM to transistor
+    analogWrite(outPin, speedVal);
+
+    delay(20);
 }

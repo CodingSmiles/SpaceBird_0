@@ -8,20 +8,39 @@ vary with the other boards
 int outPin = 9; /* Output pin to transistor base, get your transistor's datasheet and
    find where the base is
 */
+int timer1_counter;
 
 // Variable to hold speed value
 int speedVal;
 
 void setup()
 {
-    // Setup transistor pin as output
-    pinMode(outPin, OUTPUT);
+  pinMode(outPin, OUTPUT);
+
+  // initialize timer1
+  noInterrupts();           // disable all interrupts
+  TCCR1A = 0;
+  TCCR1B = 0;
+
+  // Set timer1_counter to the correct value for our interrupt interval
+  //timer1_counter = 64911;   // preload timer 65536-16MHz/256/100Hz
+  //timer1_counter = 64286;   // preload timer 65536-16MHz/256/50Hz
+  timer1_counter = 34286;   // preload timer 65536-16MHz/256/2Hz
+
+  TCNT1 = timer1_counter;   // preload timer
+  TCCR1B |= (1 << CS12);    // 256 prescaler
+  TIMSK1 |= (1 << TOIE1);   // enable timer overflow interrupt
+  interrupts();             // enable all interrupts
+}
+
+ISR(TIMER1_OVF_vect)        // interrupt service routine
+{
+  TCNT1 = timer1_counter;   // preload timer
+  speedVal++;
 }
 
 void loop()
 {
     // Write PWM to transistor
     analogWrite(outPin, speedVal);
-
-    delay(20);
 }

@@ -5,7 +5,7 @@ This is where SpaceBird 0 lives. We are currently developing the rocket engine a
 
 ## Creators
 
-The SpaceBird 0 was created by Ayushman Kalita, he does most of the 3D Designing and 3D Printing. I (Aadiraj Anil) came in when Ayushman was designing the first few prototypes. We try to do everything together.
+The SpaceBird 0 was created by Ayushman Kalita. I (Aadiraj Anil) came in when Ayushman was designing the first few prototypes. We do everything together as a team.
 
 ### Missions
 

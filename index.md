@@ -1,6 +1,6 @@
 # SpaceBird 0
 
-This is where all the code for SpaceBird 0 lives. We are currently developing the rocket engine and we have made a few designs along with some code.
+This is where SpaceBird 0 lives. We are currently developing the rocket engine and we have made a few designs along with some code.
 
 
 ## Creators

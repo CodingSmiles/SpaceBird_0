@@ -1,46 +1,44 @@
-#include <Arduino.h>
 /*
-This sketch only works with the Arduino UNO because the timer numbers would
-vary with the other boards
+  SpeedBird 0 Thrust Control Code
+  Written By Aadiraj Anil
+  Install TimerOne library before uploading
+  Connect the transistor base to pin 9
+  With 120 litres per hour (2 litres per minute), each increment will increase
+  fuel flow by 7.8ml per minute.
+  100% Fuel Flow - speedVal = 255
+  50% Fuel Flow - speedVal = 127.5
+  25% Fuel Flow - speedVal = 63.75
+  10% Fuel Flow - speedVal = 25.5
+  5% Fuel Flow - speedVal = 12.75
+  1% Fuel Flow - speedVal = 2.55
 */
-// In this commit, the code is unfinished and needs to be finished
 
-int outPin = 9; /* Output pin to transistor base, get your transistor's datasheet and
-   find where the base is
-*/
-int timer1_counter;
+#include <Arduino.h>
+#include <TimerOne.h>
 
-// Variable to hold speed value
-int speedVal;
+int outPin = 9; // Connect the transistor's base to pin 9
+
+// Variable to hold pump speed value
+volatile unsigned long speedVal = 0;
 
 void setup()
 {
+  Serial.begin(115200);
   pinMode(outPin, OUTPUT);
-
-  // initialize timer1
-  noInterrupts();           // disable all interrupts
-  TCCR1A = 0;
-  TCCR1B = 0;
-
-  // Set timer1_counter to the correct value for our interrupt interval
-  //timer1_counter = 64911;   // preload timer 65536-16MHz/256/100Hz
-  //timer1_counter = 64286;   // preload timer 65536-16MHz/256/50Hz
-  timer1_counter = 34286;   // preload timer 65536-16MHz/256/2Hz
-
-  TCNT1 = timer1_counter;   // preload timer
-  TCCR1B |= (1 << CS12);    // 256 prescaler
-  TIMSK1 |= (1 << TOIE1);   // enable timer overflow interrupt
-  interrupts();             // enable all interrupts
+  Timer1.initialize(150000);
+  Timer1.attachInterrupt(increment);
 }
 
-ISR(TIMER1_OVF_vect)        // interrupt service routine
+void increment()
 {
-  TCNT1 = timer1_counter;   // preload timer
-  speedVal++;
+  while (speedVal < 255)
+  {
+    speedVal++; // Each increment will increase the fuel flow by approx 7.8ml per minute
+  }
 }
 
 void loop()
 {
-    // Write PWM to transistor
-    analogWrite(outPin, speedVal);
+  // Write PWM to transistor
+  analogWrite(outPin, speedVal);
 }

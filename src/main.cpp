@@ -11,6 +11,7 @@
   10% Fuel Flow - speedVal = 25.5
   5% Fuel Flow - speedVal = 12.75
   1% Fuel Flow - speedVal = 2.55
+  The Timer1.initialize function can be given the interval at which the timer should interupt (in microseconds!)
 */
 
 #include <Arduino.h>
@@ -91,3 +92,4 @@ void loop()
   // Write PWM to transistor
   analogWrite(outPin, speedVal);
 }
+9

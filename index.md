@@ -17,6 +17,8 @@ The SpaceBird 0 was created by Ayushman Kalita. I (Aadiraj Anil) came in when Ay
 ***
 
 
-### More Coming Soon!
+### What's Going On Right Now?
+
+We are currently devloping a few parts, the main thing that we are focusing on right now is the combustion chamber and the nozzle/expansion chamber, we have planned the dimensions, other than that, we are also making the parachute deployment system.
 
 `Ayushman Kalita and Aadiraj Anil`

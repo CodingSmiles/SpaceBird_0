@@ -1,17 +1,9 @@
 /*
   SpeedBird 0 Thrust Control Code
-  Written By Aadiraj Anil
-  Install TimerOne library before uploading
+  Written By Aadiraj Anil and Ayushman kalita
+  Install Timerthree library before uploading
   Connect the transistor base to pin 9
-  With 120 litres per hour (2 litres per minute), each increment will increase
-  fuel flow by 7.8ml per minute.
-  100% Fuel Flow - speedVal = 255
-  50% Fuel Flow - speedVal = 127.5
-  25% Fuel Flow - speedVal = 63.75
-  10% Fuel Flow - speedVal = 25.5
-  5% Fuel Flow - speedVal = 12.75
-  1% Fuel Flow - speedVal = 2.55
-  The Timer1.initialize function can be given the interval at which the timer should interupt (in microseconds!)
+
 */
 
 #include <Arduino.h>
@@ -21,8 +13,11 @@
 #define igniterPin 10       // Connect to igniter transistor's base pin
 #define trigPin 10          // Fuel Level Sensor Trigger Pin
 #define echoPin 13          // Fuel Level Sensor Echo Pin
+#define solenoidPin 22      // This pin powers the solenoid
+#define paraPin 7           // This tells the arduino if the solenoid worked
 double duration, fuelLevel; // Fuel Level Values
 bool pumpState = true;      // true will speed up the pumps, false will do the opposite
+bool paraDeploy = false;
 
 volatile unsigned long speedVal = 0;     // Variable to hold pump speed value
 volatile unsigned long incrementVal = 1; // Variable to hold pump speed increment value
@@ -35,6 +30,8 @@ void setup()
   pinMode(echoPin, INPUT);
   pinMode(outPin, OUTPUT);
   pinMode(igniterPin, OUTPUT);
+  pinMode(solenoidPin, OUTPUT);
+  pinMode(paraPin, INPUT);
   Timer3.initialize(150000);
   Timer3.attachInterrupt(increment);
 }
@@ -50,6 +47,10 @@ void increment()
     else
     {
     }
+  }
+  else if (paraDeploy == true)
+  {
+    speedVal = 0;
   }
   else
   {
@@ -71,10 +72,11 @@ double getFuelLevel()
 
 void parachute()
 {
+  paraDeploy = true;
   pumpState = false;
-
   analogWrite(outPin, 0);
   digitalWrite(igniterPin, LOW);
+  digitalWrite(solenoidPin, HIGH);
 }
 
 void loop()
@@ -91,5 +93,10 @@ void loop()
   digitalWrite(igniterPin, HIGH);
   // Write PWM to transistor
   analogWrite(outPin, speedVal);
-}
 
+  getFuelLevel();
+  if (fuelLevel < 25.0)
+  {
+    parachute();
+  }
+}

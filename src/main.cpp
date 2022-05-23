@@ -11,10 +11,9 @@
 
 #define outPin 9            // Connect the transistor's base to pin 9
 #define igniterPin 10       // Connect to igniter transistor's base pin
-#define trigPin 10          // Fuel Level Sensor Trigger Pin
+#define trigPin 11          // Fuel Level Sensor Trigger Pin
 #define echoPin 13          // Fuel Level Sensor Echo Pin
 #define solenoidPin 22      // This pin powers the solenoid
-#define paraPin 7           // This tells the arduino if the solenoid worked
 double duration, fuelLevel; // Fuel Level Values
 bool pumpState = true;      // true will speed up the pumps, false will do the opposite
 bool paraDeploy = false;
@@ -31,7 +30,6 @@ void setup()
   pinMode(outPin, OUTPUT);
   pinMode(igniterPin, OUTPUT);
   pinMode(solenoidPin, OUTPUT);
-  pinMode(paraPin, INPUT);
   Timer3.initialize(150000);
   Timer3.attachInterrupt(increment);
 }

@@ -1,8 +1,16 @@
 /*
   SpeedBird 0 Thrust Control Code
   Written By Aadiraj Anil and Ayushman kalita
-  Install Timerthree library before uploading
+  Install TimerThree library before uploading
   Connect the transistor base to pin 9
+  With 120 litres per hour (2 litres per minute), each increment will increase
+  fuel flow by 7.8ml per minute.
+  100% Fuel Flow - speedVal = 255
+  50% Fuel Flow - speedVal = 127.5
+  25% Fuel Flow - speedVal = 63.75
+  10% Fuel Flow - speedVal = 25.5
+  5% Fuel Flow - speedVal = 12.75
+  1% Fuel Flow - speedVal = 2.55
 
 */
 
@@ -30,7 +38,7 @@ void setup()
   pinMode(pumpPin, OUTPUT);
   pinMode(igniterPin, OUTPUT);
   pinMode(solenoidPin, OUTPUT);
-  Timer3.initialize(250000);
+  Timer3.initialize(300000);
   Timer3.attachInterrupt(increment);
 }
 

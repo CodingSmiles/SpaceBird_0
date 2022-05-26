@@ -9,7 +9,7 @@
 #include <Arduino.h>
 #include <TimerThree.h>
 
-#define outPin 9            // Connect the transistor's base to pin 9
+#define pumpPin 9           // Connect the transistor's base to pin 9
 #define igniterPin 10       // Connect to igniter transistor's base pin
 #define trigPin 11          // Fuel Level Sensor Trigger Pin
 #define echoPin 13          // Fuel Level Sensor Echo Pin
@@ -27,10 +27,10 @@ void setup()
   Serial.begin(115200);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
-  pinMode(outPin, OUTPUT);
+  pinMode(pumpPin, OUTPUT);
   pinMode(igniterPin, OUTPUT);
   pinMode(solenoidPin, OUTPUT);
-  Timer3.initialize(150000);
+  Timer3.initialize(250000);
   Timer3.attachInterrupt(increment);
 }
 
@@ -56,7 +56,7 @@ void increment()
   }
 }
 
-double getFuelLevel()
+void getFuelLevel()
 {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -65,14 +65,13 @@ double getFuelLevel()
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   fuelLevel = (duration / 2) * 0.0343;
-  return fuelLevel;
 }
 
 void parachute()
 {
   paraDeploy = true;
   pumpState = false;
-  analogWrite(outPin, 0);
+  analogWrite(pumpPin, 0);
   digitalWrite(igniterPin, LOW);
   digitalWrite(solenoidPin, HIGH);
 }
@@ -80,21 +79,22 @@ void parachute()
 void loop()
 {
   getFuelLevel();
-  if (fuelLevel < 15.0)
+  if (fuelLevel > 25.0)
+  {
+    parachute();
+  }
+  else if (fuelLevel > 15.0)
   {
     pumpState = false;
     decrementVal = 1;
     digitalWrite(igniterPin, HIGH);
-    analogWrite(outPin, speedVal);
+    analogWrite(pumpPin, speedVal);
   }
-  // Start Igniter
-  digitalWrite(igniterPin, HIGH);
-  // Write PWM to transistor
-  analogWrite(outPin, speedVal);
-
-  getFuelLevel();
-  if (fuelLevel < 25.0)
+  else
   {
-    parachute();
+    // Start Igniter
+    digitalWrite(igniterPin, HIGH);
+    // Write PWM to transistor
+    analogWrite(pumpPin, speedVal);
   }
 }

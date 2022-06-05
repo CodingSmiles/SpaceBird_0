@@ -22,6 +22,7 @@
 #define trigPin 11          // Fuel Level Sensor Trigger Pin
 #define echoPin 13          // Fuel Level Sensor Echo Pin
 #define solenoidPin 22      // This pin powers the solenoid
+
 double duration, fuelLevel; // Fuel Level Values
 bool pumpState = true;      // true will speed up the pumps, false will do the opposite
 bool paraDeploy = false;
@@ -72,7 +73,7 @@ void getFuelLevel()
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
-  fuelLevel = (duration / 2) * 0.0343;
+  fuelLevel = (duration / 2) * 0.0340;
 }
 
 void parachute()

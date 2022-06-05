@@ -32,77 +32,71 @@ volatile unsigned long decrementVal = 1; // Variable to hold pump speed decremen
 
 void setup()
 {
-  Serial.begin(115200);
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  pinMode(pumpPin, OUTPUT);
-  pinMode(igniterPin, OUTPUT);
-  pinMode(solenoidPin, OUTPUT);
-  Timer3.initialize(300000);
-  Timer3.attachInterrupt(increment);
+    Serial.begin(115200);
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    pinMode(pumpPin, OUTPUT);
+    pinMode(igniterPin, OUTPUT);
+    pinMode(solenoidPin, OUTPUT);
+    Timer3.initialize(300000);
+    Timer3.attachInterrupt(increment);
 }
 
 void increment()
 {
-  if (pumpState == true)
-  {
-    if (speedVal < 255)
+    if (pumpState == true || speedVal < 255)
     {
-      speedVal + incrementVal; // Each increment will increase the fuel flow by approx 7.8ml per minute
+        speedVal + incrementVal;
     }
-    else
+    else if (paraDeploy == true)
     {
+        speedVal = 0;
     }
-  }
-  else if (paraDeploy == true)
-  {
-    speedVal = 0;
-  }
-  else
-  {
-    speedVal - decrementVal;
-  }
+    else if (pumpState == false)
+    {
+        speedVal - decrementVal;
+    }
 }
 
 void getFuelLevel()
 {
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
-  fuelLevel = (duration / 2) * 0.0340;
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    duration = pulseIn(echoPin, HIGH);
+    fuelLevel = (duration / 2) * 0.0340;
 }
 
 void parachute()
 {
-  paraDeploy = true;
-  pumpState = false;
-  analogWrite(pumpPin, 0);
-  digitalWrite(igniterPin, LOW);
-  digitalWrite(solenoidPin, HIGH);
+    paraDeploy = true;
+    pumpState = false;
+    analogWrite(pumpPin, 0);
+    digitalWrite(igniterPin, LOW);
+    digitalWrite(solenoidPin, HIGH);
 }
 
 void loop()
 {
-  getFuelLevel();
-  if (fuelLevel > 25.0)
-  {
-    parachute();
-  }
-  else if (fuelLevel > 15.0)
-  {
-    pumpState = false;
-    decrementVal = 1;
-    digitalWrite(igniterPin, HIGH);
-    analogWrite(pumpPin, speedVal);
-  }
-  else
-  {
-    // Start Igniter
-    digitalWrite(igniterPin, HIGH);
-    // Write PWM to transistor
-    analogWrite(pumpPin, speedVal);
-  }
+    getFuelLevel();
+    if (fuelLevel > 25.0)
+    {
+        parachute();
+    }
+    else if (fuelLevel > 15.0)
+    {
+        pumpState = false;
+        decrementVal = 1;
+        digitalWrite(igniterPin, HIGH);
+        analogWrite(pumpPin, speedVal);
+    }
+    else
+    {
+        // Start Igniter
+        digitalWrite(igniterPin, HIGH);
+        // Write PWM to transistor
+        analogWrite(pumpPin, speedVal);
+    }
 }

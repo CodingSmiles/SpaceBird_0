@@ -44,23 +44,20 @@ void setup()
 
 void increment()
 {
-  if (pumpState == true)
+  if (pumpState == true && speedVal > 250)
   {
-    if (speedVal < 255)
-    {
-      speedVal + incrementVal; // Each increment will increase the fuel flow by approx 7.8ml per minute
-    }
-    else
-    {
-    }
+    speedVal + incrementVal;
   }
   else if (paraDeploy == true)
   {
     speedVal = 0;
   }
-  else
+  else if (pumpState == false)
   {
     speedVal - decrementVal;
+  }
+  else if (speedVal > 250)
+  {
   }
 }
 
@@ -81,6 +78,14 @@ void parachute()
   pumpState = false;
   analogWrite(pumpPin, 0);
   digitalWrite(igniterPin, LOW);
+  digitalWrite(solenoidPin, HIGH);
+  delay(200);
+  digitalWrite(solenoidPin, LOW);
+  delay(200);
+  digitalWrite(solenoidPin, HIGH);
+  delay(200);
+  digitalWrite(solenoidPin, LOW);
+  delay(200);
   digitalWrite(solenoidPin, HIGH);
 }
 

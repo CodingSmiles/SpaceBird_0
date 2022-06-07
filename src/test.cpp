@@ -44,7 +44,7 @@ void setup()
 
 void increment()
 {
-    if (pumpState == true || speedVal < 255)
+    if (pumpState == true && speedVal > 250)
     {
         speedVal + incrementVal;
     }
@@ -55,6 +55,9 @@ void increment()
     else if (pumpState == false)
     {
         speedVal - decrementVal;
+    }
+    else if (speedVal > 250) {
+        
     }
 }
 
@@ -75,6 +78,14 @@ void parachute()
     pumpState = false;
     analogWrite(pumpPin, 0);
     digitalWrite(igniterPin, LOW);
+    digitalWrite(solenoidPin, HIGH);
+    delay(200);
+    digitalWrite(solenoidPin, LOW);
+    delay(200);
+    digitalWrite(solenoidPin, HIGH);
+    delay(200);
+    digitalWrite(solenoidPin, LOW);
+    delay(200);
     digitalWrite(solenoidPin, HIGH);
 }
 
